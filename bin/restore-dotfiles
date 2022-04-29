@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euf -o pipefail
+# https://www.atlassian.com/git/tutorials/dotfiles
+mkdir -p "$HOME/.config/"
+DOTDIR="$HOME/.config/jpillora-dotfiles/"
+DOTGIT="git --git-dir=$DOTDIR --work-tree=$HOME"
+if [ ! -d "$DOTDIR" ]; then
+  echo "cloning dotfiles..."
+  git clone --bare "git@github.com:jpillora/dotfiles.git" $DOTDIR
+  $DOTGIT config --local status.showUntrackedFiles no
+fi
+$DOTGIT status
+$DOTGIT checkout main
