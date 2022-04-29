@@ -37,3 +37,7 @@ end
 function l
   exa $argv
 end
+
+function dotgit
+  /usr/bin/git --git-dir=$HOME/.config/jpillora-dotfiles/ --work-tree=$HOME $argv
+end
