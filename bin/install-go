@@ -1,0 +1,36 @@
+#!/bin/bash
+set -euf -o pipefail
+
+#force run with bash
+if [ -z "$BASH_VERSION" ]; then
+  exec bash "$0" "$@"
+  return
+fi
+
+#create local scope
+function install {
+  # test permissions
+  mkdir -p /usr/local/go
+  # detect latest version
+  echo "Discovering latest version of Go..."
+  typeset VER=$(curl -s https://go.dev/dl/ | grep -m 1 -o 'go1\(\.[0-9]\+\)\+' | head -n1)
+  echo "Detected latest: $VER"
+  # TODO compare latest to current installed
+  # wipe old version
+  rm -rf /usr/local/go
+  # detect os/arch
+  typeset OS=$(uname -s | tr 'A-Z' 'a-z')
+  if uname -m | grep arm64 >/dev/null; then
+    typeset ARCH=arm64
+  elif uname -m | grep 64 >/dev/null; then
+    typeset ARCH=amd64
+  else
+    typeset ARCH=386
+  fi
+  # download
+  typeset FILE=$VER.$OS-$ARCH.tar.gz
+  echo "Installing '$FILE' into /usr/local/go"
+  curl -# -L "https:/go.dev/dl/$FILE" | tar -C /usr/local -zxf -
+  echo "Go has been installed. Add /usr/local/go/bin to your PATH."
+}
+install

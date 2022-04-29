@@ -1,0 +1,8 @@
+#!/bin/bash
+#tmux helper
+NAME="${1}"
+if [[ "$NAME" = "" ]]; then
+  tmux ls
+else
+  tmux attach-session -t "$NAME" || tmux new-session -s "$NAME"
+fi
