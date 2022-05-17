@@ -2,7 +2,10 @@ set -x GOPATH $HOME/Code/Go
 set PATH $HOME/bin /usr/local/bin /usr/local/go/bin $GOPATH/bin $PATH
 
 if status is-interactive
-    # Commands to run in interactive sessions can go here
+    # lazy load home dir homebrew
+    if test -d $HOME/homebrew/bin/
+        eval ($HOME/homebrew/bin/brew shellenv)
+    end
 end
 
 function fish_greeting
@@ -39,5 +42,14 @@ function l
 end
 
 function dotgit
-  /usr/bin/git --git-dir=$HOME/.config/jpillora-dotfiles/ --work-tree=$HOME $argv
+  git --git-dir=$HOME/.config/jpillora-dotfiles/ --work-tree=$HOME $argv
+end
+
+function install-fisher
+  curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+end
+
+function install-nvm
+  fisher install jorgebucaran/nvm.fish; and \
+    set --universal nvm_default_version lts
 end
