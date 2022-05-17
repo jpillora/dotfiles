@@ -47,8 +47,10 @@ end
 
 function dotgitupdate
   dotgit diff
+  echo
   read -P "sync these changes? y/n (default y) " ANS
-  if [ "$ANS" = "y" ] or ["$ANS" = ""];
+  echo "got '$ANS'"
+  if test "$ANS" = "y" || test "$ANS" = ""
     dotgit add -u; and dotgit commit -m 'updated'; and dotgit push
   end
 end
