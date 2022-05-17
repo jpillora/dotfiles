@@ -46,7 +46,11 @@ function dotgit
 end
 
 function dotgitupdate
-  dotgit diff
+  dotgit diff --exit-code
+  if test $status -eq 0
+    echo "no changes"
+    exit 0
+  end
   echo
   read -P "sync these changes? y/n (default y) " ANS
   echo "got '$ANS'"
