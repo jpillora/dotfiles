@@ -46,7 +46,11 @@ function dotgit
 end
 
 function dotgitupdate
-  dotgit add -u; and dotgit commit -m 'updated'; and dotgit push
+  dotgit diff
+  read -P "sync these changes? y/n (default y) " ANS
+  if [ "$ANS" = "y" ] or ["$ANS" = ""];
+    dotgit add -u; and dotgit commit -m 'updated'; and dotgit push
+  end
 end
 
 function install-fisher
