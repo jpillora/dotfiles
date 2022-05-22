@@ -1,8 +1,38 @@
 #!/bin/bash
-#tmux helper
-NAME="${1}"
-if [[ "$NAME" = "" ]]; then
-  tmux ls
-else
-  tmux attach-session -t "$NAME" || tmux new-session -s "$NAME"
+function tm() {
+# tm helper script
+local NAME=$1
+local CURR=""
+local OUT=""
+if [ ! -z "$TMUX" ]; then
+    #get currently attached terminal
+    CURR=$(tmux display-message -p '#S')
 fi
+if [ -z "$NAME" ]; then
+    #list terminals
+    OUT=$(tmux ls 2> /dev/null)
+    if test $? -ne 0; then
+        	echo "no sessions, use 'tm <session-name>' to create one"
+    else
+        	echo "$OUT"
+    fi
+elif [ -z "$CURR" ]; then
+    #not in tmux, attach
+    tmux attach-session -t "$NAME"
+    #doesnt exist? create
+    if test $? -ne 0; then
+        tmux new-session -s "$NAME"
+    fi
+elif [ "$NAME" == "$CURR" ]; then
+    #in tmux, already attach
+    echo "already attached to '$NAME'"
+else
+    #in tmux, switch
+    tmux switch-client -t "$NAME"
+    #doesnt exist? create detached, retry switch
+    if test $? -ne 0; then
+        tmux new-session -d -s "$NAME" && tmux switch-client -t "$NAME"
+    fi
+fi
+}
+tm "$@"
