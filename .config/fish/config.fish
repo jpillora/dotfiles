@@ -18,7 +18,7 @@ funcsave __fish_describe_command
 
 function fish_prompt
     set_color cyan
-    echo -n $USER
+    echo -n $hostname
     echo -n ' '
     set_color $fish_color_cwd
     echo -n (prompt_pwd)
@@ -44,6 +44,10 @@ end
 
 function l
     exa $argv
+end
+
+function c
+  bat --style=snip --paging=never $argv
 end
 
 function dotgit
