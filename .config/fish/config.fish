@@ -11,11 +11,6 @@ end
 function fish_greeting
 end
 
-#fix slow autocomplete
-function __fish_describe_command
-end
-funcsave __fish_describe_command
-
 function fish_prompt
     set_color cyan
     echo -n $hostname
