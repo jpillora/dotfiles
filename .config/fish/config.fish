@@ -6,6 +6,7 @@ if status is-interactive
     if test -d $HOME/homebrew/bin/
         eval ($HOME/homebrew/bin/brew shellenv)
     end
+    # TODO: lazy load project based secrets
 end
 
 function fish_greeting
@@ -13,18 +14,16 @@ end
 
 function fish_prompt
     set_color cyan
-    echo -n $hostname
+    switch $hostname
+        case "x15*"
+            echo -n x15
+        case '*'
+            echo -n $hostname
+    end
     echo -n ' '
     set_color $fish_color_cwd
-    echo -n (prompt_pwd)
-    set_color normal
-    echo -n ' '
-end
-
-function prompt_pwd --description 'modify pwd to shorten paths, add git branch'
     set wd "$PWD"
     set wd (string replace "$HOME" "~" "$wd")
-    set_color green
     echo -n "$wd"
     set_color normal
     if set branch (git rev-parse --abbrev-ref HEAD 2> /dev/null)
@@ -34,7 +33,8 @@ function prompt_pwd --description 'modify pwd to shorten paths, add git branch'
         set_color normal
         echo -n ")"
     end
-    echo ""
+    set_color normal
+    echo -n ' '
 end
 
 function l
@@ -42,7 +42,7 @@ function l
 end
 
 function c
-  bat --style=snip --paging=never $argv
+    bat --style=snip --paging=never $argv
 end
 
 function dotgit
