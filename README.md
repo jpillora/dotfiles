@@ -21,6 +21,8 @@ Plus a some handy scripts
 	git clone --bare https://github.com/jpillora/dotfiles.git $HOME/.config/jpillora-dotfiles
 	# define dotgit command
 	function dotgit; git --git-dir=$HOME/.config/jpillora-dotfiles/ --work-tree=$HOME $argv; end
+	# important! prevents your entire HOME dir from being processed by git
+	dotgit config --local status.showUntrackedFiles no
 	# attempt to checkout files into $HOME (may need to resolve conflicts)
 	dotgit checkout
 	```
@@ -45,9 +47,3 @@ You can also run any git command:
 dotgit <normal git command>
 ```
 
-## Notes
-
-```
-# important! prevents your entire HOME dir from being processed by git
-dotgit config --local status.showUntrackedFiles no
-```
