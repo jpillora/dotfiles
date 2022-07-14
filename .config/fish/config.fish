@@ -69,3 +69,8 @@ end
 function install-nvm
     fisher install jorgebucaran/nvm.fish; and set --universal nvm_default_version lts
 end
+
+# Bun
+set -Ux BUN_INSTALL "/Users/jpx15/.bun"
+set -px --path PATH "/Users/jpx15/.bun/bin"
+
