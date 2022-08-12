@@ -14,8 +14,8 @@ if status is-interactive
         set -px --path PATH "/Users/jpx15/.bun/bin"
     end
     # lazy fishenv
-    if test -f $HOME/.config/fishenv/load.fish
-        . $HOME/.config/fishenv/load.fish
+    if test -f $HOME/.config/fishenv/env.fish
+        . $HOME/.config/fishenv/env.fish
     end
 end
 

@@ -6,16 +6,18 @@ directory-based environment files
 
 ## Usage
 
-1. save `env.fish` somewhere
-1. update your `config.fish` with
+1. save `env.fish` to `~/.config/fishenv/env.fish` 
+1. add this to your `config.fish` with
 
+   ```fish
+   if status is-interactive
+     . ~/.config/fishenv/env.fish
+   end
    ```
-   . fish.env
-   ```
 
-1. add `<id>.env` files into your `~/.config/fishenv/` directory
+1. add `~/.config/fishenv/<id>.env` files
 
-   fishenv will match the `id` of your files by stripping `$HOME` from `$PWD` and replacing `/` with `-`
+   fishenv will prefix match the `id` of your files by stripping `$HOME` from `$PWD` and replacing `/` with `-`
 
    for example, to create an environment for `~/projects/foobar` you would create `~/.config/fishenv/projects-foobar.env`
 
