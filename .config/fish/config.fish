@@ -1,4 +1,6 @@
+set -x XDG_CONFIG_HOME $HOME/.config
 set -x GOPATH $HOME/Code/Go
+set -x GOPRIVATE "github.com/12kmps/*"
 set PATH $HOME/bin /usr/local/bin /usr/local/go/bin $GOPATH/bin $PATH
 
 if status is-interactive
@@ -11,7 +13,10 @@ if status is-interactive
         set -Ux BUN_INSTALL "/Users/jpx15/.bun"
         set -px --path PATH "/Users/jpx15/.bun/bin"
     end
-    # TODO: lazy load project based secrets
+    # lazy fishenv
+    if test -f $HOME/.config/fishenv/load.fish
+        . $HOME/.config/fishenv/load.fish
+    end
 end
 
 function fish_greeting
@@ -27,8 +32,8 @@ function fish_prompt
     end
     echo -n ' '
     set_color $fish_color_cwd
-    set wd "$PWD"
-    set wd (string replace "$HOME" "~" "$wd")
+    set --local wd "$PWD"
+    set --local wd (string replace "$HOME" "~" "$wd")
     echo -n "$wd"
     set_color normal
     if set branch (git rev-parse --abbrev-ref HEAD 2> /dev/null)
@@ -43,7 +48,15 @@ function fish_prompt
 end
 
 function l
-    exa $argv
+    if test (count $argv) -eq 0
+        exa -lah --icons
+    else
+        exa $argv
+    end
+end
+
+function k
+    kubectl $argv
 end
 
 function c
@@ -61,9 +74,15 @@ function dotgitupdate
         return
     end
     echo
-    read -P "sync these changes? y/n (default y) " ANS
-    if test "$ANS" = y || test "$ANS" = ""
-        dotgit add -u; and dotgit commit -m updated; and dotgit push
+    while true
+        read -P "sync these changes? y/n " ANS
+        if test "$ANS" = y
+            dotgit add -u; and dotgit commit -m updated; and dotgit push
+            break
+        else if test "$ANS" = n
+            echo cancelled
+            break
+        end
     end
 end
 
@@ -74,4 +93,3 @@ end
 function install-nvm
     fisher install jorgebucaran/nvm.fish; and set --universal nvm_default_version lts
 end
-
