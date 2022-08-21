@@ -49,6 +49,8 @@ end
 
 function l
     if test (count $argv) -eq 0
+        # brew tap homebrew/cask-fonts
+        # brew install --cask font-hack-nerd-font
         exa -lah --icons
     else
         exa $argv
@@ -63,11 +65,11 @@ function c
     bat --style=snip --paging=never $argv
 end
 
-function dotgit
+function xgit
     git --git-dir=$HOME/.config/jpillora-dotfiles/ --work-tree=$HOME $argv
 end
 
-function dotgitupdate
+function xgitx
     dotgit diff --exit-code
     if test $status -eq 0
         echo "no changes"
