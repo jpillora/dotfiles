@@ -70,7 +70,7 @@ function xgit
 end
 
 function xgitx
-    dotgit diff --exit-code
+    xgit diff --exit-code
     if test $status -eq 0
         echo "no changes"
         return
@@ -79,7 +79,7 @@ function xgitx
     while true
         read -P "sync these changes? y/n " ANS
         if test "$ANS" = y
-            dotgit add -u; and dotgit commit -m updated; and dotgit push
+            xgit add -u; and xgit commit -m updated; and xgit push
             break
         else if test "$ANS" = n
             echo cancelled
