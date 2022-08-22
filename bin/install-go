@@ -22,6 +22,8 @@ function install {
   typeset OS=$(uname -s | tr 'A-Z' 'a-z')
   if uname -m | grep arm64 >/dev/null; then
     typeset ARCH=arm64
+  elif uname -m | grep arm >/dev/null; then
+    typeset ARCH=armv6l
   elif uname -m | grep 64 >/dev/null; then
     typeset ARCH=amd64
   else
