@@ -1,7 +1,16 @@
+#LINUX
 set -x XDG_CONFIG_HOME $HOME/.config
+#GO
 set -x GOPATH $HOME/Code/Go
-set -x GOPRIVATE "github.com/12kmps/*"
+#PATH
 set PATH $HOME/bin /usr/local/bin /usr/local/go/bin $GOPATH/bin $PATH
+#AWS
+set -x AWS_PROFILE default
+set -x AWS_REGION ap-southeast-2
+#FISH
+bind \cH backward-kill-word
+set __fish_git_prompt_color_branch yellow
+set __fish_git_prompt_showdirtystate yes
 
 if status is-interactive
     # lazy load home dir homebrew
@@ -23,12 +32,17 @@ function fish_greeting
 end
 
 function fish_prompt
-    set_color cyan
-    switch $hostname
+    if test $status -eq 0
+        set_color cyan
+    else
+        set_color red
+    end
+    set --local h (string replace ".local" "" (hostname))
+    switch h
         case "x15*"
             echo -n x15
         case '*'
-            echo -n $hostname
+            echo -n "$h"
     end
     echo -n ' '
     set_color $fish_color_cwd
@@ -65,6 +79,10 @@ function c
     bat --style=snip --paging=never $argv
 end
 
+function lsp
+    lsof -i -n -P
+end
+
 function xgit
     git --git-dir=$HOME/.config/jpillora-dotfiles/ --work-tree=$HOME $argv
 end
@@ -94,4 +112,12 @@ end
 
 function install-nvm
     fisher install jorgebucaran/nvm.fish; and set --universal nvm_default_version lts
+end
+
+function gitaddpush
+    set msg "$argv"
+    if [ "$msg" = "" ]
+        set msg updated
+    end
+    git add -A; and git commit -m "$msg"; and git push
 end
