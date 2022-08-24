@@ -38,11 +38,10 @@ function fish_prompt
         set_color red
     end
     set --local h (string replace ".local" "" (hostname))
-    switch h
-        case "x15*"
-            echo -n x15
-        case '*'
-            echo -n "$h"
+    if string match -q "x15*" "$h"
+        echo -n x15
+    else
+        echo -n "$h"
     end
     echo -n ' '
     set_color $fish_color_cwd
@@ -112,6 +111,11 @@ end
 
 function install-nvm
     fisher install jorgebucaran/nvm.fish; and set --universal nvm_default_version lts
+end
+
+function setup-git
+    git config --global gpg.format ssh
+    git config --global user.signingkey (cat ~/.ssh/id_ed25519.pub)
 end
 
 function gitaddpush
