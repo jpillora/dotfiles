@@ -1,5 +1,29 @@
 #!/bin/bash
 set -euf -o pipefail
+# is-installed?
+installed() {
+  command -v "$1" >/dev/null 2>&1
+}
+# which package manager
+mgr=""
+if installed brew; then
+  mgr="brew -vd"
+elif installed apt; then
+  mgr="apt"
+else
+  # TODO if darwin, prompt to install brew
+  echo "no package manager (brew/apt) found"
+  exit 1
+fi
+# do-install
+install() {
+  installed "$1" && return 0
+  echo "installing $1..."
+  $mgr install "$1"
+}
+# install dependencies
+install git
+install fish
 # https://www.atlassian.com/git/tutorials/dotfiles
 mkdir -p "$HOME/.config/"
 DOTDIR="$HOME/.config/jpillora-dotfiles/"
@@ -10,4 +34,5 @@ if [ ! -d "$DOTDIR" ]; then
   $DOTGIT config --local status.showUntrackedFiles no
 fi
 $DOTGIT status
-$DOTGIT checkout main
+$DOTGIT checkout main || echo "failed to checkout dotfiles, append .tmp to the files listed and rerun"
+# TODO, auto append .tmp to clash files

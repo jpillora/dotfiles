@@ -11,21 +11,10 @@ Plus a some handy scripts
 
 ## Initialise
 
-1. Install `git` and `fish` shell
-
-1. Cloned repo `--bare` (https://www.atlassian.com/git/tutorials/dotfiles)
-
-	```fish
-	# clone the bare repo (git metadata only)
-	mkdir -p $HOME/.config/
-	git clone --bare https://github.com/jpillora/dotfiles.git $HOME/.config/jpillora-dotfiles
-	# define dotgit command
-	function dotgit; git --git-dir=$HOME/.config/jpillora-dotfiles/ --work-tree=$HOME $argv; end
-	# important! prevents your entire HOME dir from being processed by git
-	dotgit config --local status.showUntrackedFiles no
-	# attempt to checkout files into $HOME (may need to resolve conflicts)
-	dotgit checkout
-	```
+```sh
+# run the restore script in this repo
+curl https://jpillora.com/dotfiles/bin/restore-dotfiles | bash
+```
 
 ## Usage
 
