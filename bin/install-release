@@ -6,4 +6,4 @@ if [[ -z "$PROG" ]]; then
   echo "usage: install-release <user>/<repo> OR <google-search-term>"
   exit 1
 fi
-curl -s "https://i.jpillora.com/${PROG}!!" | bash
+curl -s "https://i.jpillora.com/${PROG}!" | bash

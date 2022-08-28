@@ -18,7 +18,7 @@ fi
 # do-install
 install() {
   installed "$1" && return 0
-  echo "installing $1..."
+  echo "===> installing $1..."
   $mgr install "$1"
 }
 # install dependencies
@@ -28,11 +28,16 @@ install fish
 mkdir -p "$HOME/.config/"
 DOTDIR="$HOME/.config/jpillora-dotfiles/"
 DOTGIT="git --git-dir=$DOTDIR --work-tree=$HOME"
-if [ ! -d "$DOTDIR" ]; then
-  echo "cloning dotfiles..."
+if [ -d "$DOTDIR" ]; then
+  echo "===> dotfiles repo already exists"
+else
+  echo "===> cloning dotfiles..."
   git clone --bare "git@github.com:jpillora/dotfiles.git" $DOTDIR
   $DOTGIT config --local status.showUntrackedFiles no
 fi
+echo "===> dotfiles status..."
 $DOTGIT status
+echo "===> dotfiles checkout..."
 $DOTGIT checkout main || echo "failed to checkout dotfiles, append .tmp to the files listed and rerun"
-# TODO, auto append .tmp to clash files
+# TODO, if fail, auto append .tmp to clash files
+$HOME/bin/restore-authorized-keys
