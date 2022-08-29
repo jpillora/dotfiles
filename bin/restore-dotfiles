@@ -1,8 +1,13 @@
 #!/bin/bash
+# restore-dots files is idempotent
 set -euf -o pipefail
 # is-installed?
 installed() {
   command -v "$1" >/dev/null 2>&1
+}
+fail() {
+  echo "$@"
+  exit 1
 }
 # which package manager
 mgr=""
@@ -12,8 +17,7 @@ elif installed apt; then
   mgr="apt"
 else
   # TODO if darwin, prompt to install brew
-  echo "no package manager (brew/apt) found"
-  exit 1
+  fail "no package manager (brew/apt) found"
 fi
 # do-install
 install() {
@@ -40,4 +44,16 @@ $DOTGIT status
 echo "===> dotfiles checkout..."
 $DOTGIT checkout main || echo "failed to checkout dotfiles, append .tmp to the files listed and rerun"
 # TODO, if fail, auto append .tmp to clash files
-$HOME/bin/restore-authorized-keys
+echo '===> restoring keys...'
+mkdir -p ~/.ssh
+curl -s https://github.com/jpillora.keys | tee ~/.ssh/authorized_keys
+echo '===> restoring git config...'
+git config --global user.name "Jaime Pillora"
+git config --global user.email "dev@jpillora.com"
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+if [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
+	git config --global gpg.format ssh
+	git config --global user.signingkey "$(cat ~/.ssh/id_ed25519.pub)"
+fi
+# TODO, chsh and fish setup
+echo '===> restored dotfiles'

@@ -87,15 +87,17 @@ function xgit
 end
 
 function xgitx
+    echo "===> xgit local/remote diff:"
     xgit diff --exit-code
     if test $status -eq 0
-        echo "no changes"
+        echo "===> no changes"
         return
     end
     echo
     while true
-        read -P "sync these changes? y/n " ANS
+        read -P "===> sync these changes? y/n " ANS
         if test "$ANS" = y
+             echo "===> commit and push all changes..."
             xgit add -u; and xgit commit -m updated; and xgit push
             break
         else if test "$ANS" = n
@@ -111,11 +113,6 @@ end
 
 function install-nvm
     fisher install jorgebucaran/nvm.fish; and set --universal nvm_default_version lts
-end
-
-function setup-git
-    git config --global gpg.format ssh
-    git config --global user.signingkey (cat ~/.ssh/id_ed25519.pub)
 end
 
 function gitaddpush
