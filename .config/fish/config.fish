@@ -5,7 +5,6 @@ set -x GOPATH $HOME/Code/Go
 #PATH
 set PATH $HOME/bin /usr/local/bin /usr/local/go/bin $GOPATH/bin $PATH
 #AWS
-set -x AWS_PROFILE default
 set -x AWS_REGION ap-southeast-2
 #FISH
 bind \cH backward-kill-word
