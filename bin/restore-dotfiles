@@ -10,11 +10,11 @@ fail() {
   exit 1
 }
 # which package manager
-mgr=""
+mgrinstall=""
 if installed brew; then
-  mgr="brew -vd"
+  mgrinstall="brew -vd install"
 elif installed apt; then
-  mgr="apt"
+  mgrinstall="apt -y install"
 else
   # TODO if darwin, prompt to install brew
   fail "no package manager (brew/apt) found"
@@ -23,7 +23,7 @@ fi
 install() {
   installed "$1" && return 0
   echo "===> installing $1..."
-  $mgr install "$1"
+  $mgrinstall "$1"
 }
 # install dependencies
 install git
