@@ -36,7 +36,11 @@ if [ -d "$DOTDIR" ]; then
   echo "===> dotfiles repo already exists"
 else
   echo "===> cloning dotfiles..."
-  git clone --bare "git@github.com:jpillora/dotfiles.git" $DOTDIR
+  URL="git@github.com:jpillora/dotfiles.git"
+  if ! git ls-remote "$URL" 2> /dev/null; then
+  	URL="https://github.com/jpillora/dotfiles.git"
+  fi
+  git clone --bare "$URL" $DOTDIR
   $DOTGIT config --local status.showUntrackedFiles no
 fi
 echo "===> dotfiles status..."
