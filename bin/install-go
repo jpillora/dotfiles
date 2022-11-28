@@ -22,18 +22,17 @@ function psudo() {
 #install go
 function install {
   # detect latest version
-  echo "Discovering latest version of Go..."
+  echo "Finding latest version of Go..."
   declare VER=$(curl -s https://go.dev/dl/ | grep -m 1 -o 'go1\(\.[0-9]\+\)\+' | head -n1)
-  echo "Detected latest: $VER"
+  echo "Latest version: $VER"
   # detect if already have latest
   if which go >/dev/null; then
-    if go version | grep -q "$VER "; then
-      echo "$VER already installed"
-      return
+    declare CUR=$(go version | grep -o 'go1\(\.[0-9]\+\)\+' | head -n1)
+    echo "Installed version: $CUR"
+    if [ "$CUR" = "$VER" ]; then
+      return 0
     fi
   fi
-  # wipe old version
-  psudo rm -rf /usr/local/go
   # detect os/arch
   declare OS=$(uname -s | tr 'A-Z' 'a-z')
   if uname -m | grep arm64 >/dev/null; then
@@ -51,7 +50,10 @@ function install {
   echo "Downloading '$FILE' into $TMP_DIR"
   curl -# -L "https:/go.dev/dl/$FILE" | tar -C $TMP_DIR -zxf -
   declare GO_DIR="$TMP_DIR/go"
-  echo "Go has been downloaded. Installing into /usr/local/go"
+  echo "Go has been downloaded. Deleting old version..."
+  # wipe old version
+  psudo rm -rf /usr/local/go
+  echo "Installing new version..."
   psudo mv $GO_DIR /usr/local/go
   echo "Go has been installed. Add /usr/local/go/bin to your PATH."
 }

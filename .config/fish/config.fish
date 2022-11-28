@@ -86,6 +86,8 @@ function xgit
 end
 
 function xgitx
+    echo "===> xgit pull remote"
+    xgit pull
     echo "===> xgit local/remote diff:"
     xgit diff --exit-code
     if test $status -eq 0
