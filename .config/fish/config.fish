@@ -27,6 +27,9 @@ if status is-interactive
     end
 end
 
+function __fish_describe_command
+end
+
 function fish_greeting
 end
 
@@ -39,6 +42,8 @@ function fish_prompt
     set --local h (string replace ".local" "" (hostname))
     if string match -q "x15*" "$h"
         echo -n x15
+    else if string match -q "ENG-*" "$h"
+        echo -n cba
     else
         echo -n "$h"
     end
