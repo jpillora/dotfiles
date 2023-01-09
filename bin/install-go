@@ -52,8 +52,8 @@ function install {
     echo "mktemp failed"
     exit 1
   fi
-  # echo "Downloading '$FILE' into $TMP_DIR"
-  # curl -# -L "https:/go.dev/dl/$FILE" | tar -C $TMP_DIR -zxf -
+  echo "Downloading '$FILE' into $TMP_DIR"
+  curl -# -L "https:/go.dev/dl/$FILE" | tar -C $TMP_DIR -zxf -
   declare GO_DIR="$TMP_DIR/go"
   echo "Go has been downloaded. Deleting old version..."
   # wipe old version
