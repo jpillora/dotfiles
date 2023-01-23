@@ -94,16 +94,19 @@ function xgitx
     echo "===> xgit pull remote"
     xgit pull
     echo "===> xgit local/remote diff:"
-    xgit diff --exit-code
-    if test $status -eq 0
+    set --local output (xgit status --porcelain)
+    if test -z "$output"
         echo "===> no changes"
         return
     end
-    echo
+    echo "===> diff"
+    xgit diff
+    echo "===> changes"
+    echo "$output"
     while true
-        read -P "===> sync these changes? y/n " ANS
+        read -P "===> sync? y/n " ANS
         if test "$ANS" = y
-             echo "===> commit and push all changes..."
+            echo "===> commit and push all changes..."
             xgit add -u; and xgit commit -m updated; and xgit push
             break
         else if test "$ANS" = n
