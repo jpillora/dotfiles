@@ -1,0 +1,10 @@
+#!/bin/bash
+# auto escalate priviledges
+CLI="/Applications/Privileges.app/Contents/Resources/PrivilegesCLI"
+if [ -f $CLI ]; then
+  if $CLI --status 2>&1 | grep -q "standard"; then
+    $CLI --add
+  fi
+fi
+# os sudo
+exec /usr/bin/sudo "$@"
