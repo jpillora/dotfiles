@@ -78,6 +78,10 @@ function k
     kubectl $argv
 end
 
+function vs
+    code $argv
+end
+
 function c
     bat --style=snip --paging=never $argv
 end
