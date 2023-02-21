@@ -48,7 +48,7 @@ $DOTGIT status
 echo "===> dotfiles auto upstream"
 $DOTGIT config push.autoSetupRemote true
 echo "===> dotfiles checkout..."
-$DOTGIT checkout main || echo "failed to checkout dotfiles, append .tmp to the files listed and rerun"
+$DOTGIT checkout main || fail "failed to checkout dotfiles, append .tmp to the files listed and rerun"
 # TODO, if fail, auto append .tmp to clash files
 echo '===> restoring keys...'
 mkdir -p ~/.ssh
