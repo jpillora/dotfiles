@@ -1,7 +1,0 @@
-#!/bin/bash
-set -euf -o pipefail
-# install a bunch of binaries from github releases
-./install-release ogham/exa
-./install-release ogham/dog
-./install-release micro
-./install-release xmlfmt

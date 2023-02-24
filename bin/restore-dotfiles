@@ -56,8 +56,10 @@ curl -s https://github.com/jpillora.keys | tee ~/.ssh/authorized_keys
 echo '===> restoring git config...'
 git config --global user.name "Jaime Pillora"
 git config --global user.email "dev@jpillora.com"
-git config --global url."git@github.com:".insteadOf "https://github.com/"
 if [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
+  # always use ssh
+  git config --global url."git@github.com:".insteadOf "https://github.com/"
+  # sign commits with ssh
   git config --global gpg.format ssh
   git config --global user.signingkey "$(cat ~/.ssh/id_ed25519.pub)"
 fi
