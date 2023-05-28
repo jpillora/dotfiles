@@ -6,6 +6,7 @@ set -x GOPATH $HOME/Code/Go
 set PATH $HOME/bin /usr/local/bin /usr/local/go/bin $GOPATH/bin $PATH
 #AWS
 set -x AWS_REGION ap-southeast-2
+set -x AWS_DEFAULT_REGION ap-southeast-2
 #FISH
 bind \cH backward-kill-word
 set __fish_git_prompt_color_branch yellow
@@ -27,9 +28,6 @@ if status is-interactive
     end
 end
 
-function __fish_describe_command
-end
-
 function fish_greeting
 end
 
@@ -42,8 +40,6 @@ function fish_prompt
     set --local h (string replace ".local" "" (hostname))
     if string match -q "x15*" "$h"
         echo -n x15
-    else if string match -q "ENG-*" "$h"
-        echo -n cba
     else
         echo -n "$h"
     end
@@ -78,8 +74,8 @@ function k
     kubectl $argv
 end
 
-function vs
-    code $argv
+function d
+    deno run -A $argv
 end
 
 function c
@@ -98,17 +94,14 @@ function xgitx
     echo "===> xgit pull remote"
     xgit pull
     echo "===> xgit local/remote diff:"
-    set --local output (xgit status --porcelain)
-    if test -z "$output"
+    xgit diff --exit-code
+    if test $status -eq 0
         echo "===> no changes"
         return
     end
-    echo "===> diff"
-    xgit diff
-    echo "===> changes"
-    echo "$output"
+    echo
     while true
-        read -P "===> sync? y/n " ANS
+        read -P "===> sync these changes? y/n " ANS
         if test "$ANS" = y
             echo "===> commit and push all changes..."
             xgit add -u; and xgit commit -m updated; and xgit push

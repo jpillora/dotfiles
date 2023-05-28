@@ -6,17 +6,16 @@ if [ -z "$BASH_VERSION" ]; then
 fi
 #run without sudo, then with, if needed
 function psudo() {
-  OUT=$(bash -c "$*" 2>&1)
+  OUT=$(bash -c "exec $*" 2>&1)
   STATUS=$?
   if [ $STATUS -eq 0 ]; then
     return 0
   fi
   if [[ $OUT =~ "Permission denied" ]]; then
     echo "attempting 'sudo $@'"
-    sudo bash -c "$*"
+    sudo bash -c "exec $*"
   else
     echo "command '$@' failed"
-    echo $OUT
     exit 1
   fi
 }
@@ -47,11 +46,7 @@ function install {
   fi
   # download
   declare FILE="$VER.$OS-$ARCH.tar.gz"
-  declare TMP_DIR=$(mktemp -d -t goXXXX)
-  if [ -z "$TMP_DIR" ]; then
-    echo "mktemp failed"
-    exit 1
-  fi
+  declare TMP_DIR=$(mktemp -d -t go)
   echo "Downloading '$FILE' into $TMP_DIR"
   curl -# -L "https:/go.dev/dl/$FILE" | tar -C $TMP_DIR -zxf -
   declare GO_DIR="$TMP_DIR/go"

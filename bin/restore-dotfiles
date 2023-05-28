@@ -37,18 +37,16 @@ if [ -d "$DOTDIR" ]; then
 else
   echo "===> cloning dotfiles..."
   URL="git@github.com:jpillora/dotfiles.git"
-  if ! git ls-remote "$URL" 2>/dev/null; then
-    URL="https://github.com/jpillora/dotfiles.git"
+  if ! git ls-remote "$URL" 2> /dev/null; then
+  	URL="https://github.com/jpillora/dotfiles.git"
   fi
   git clone --bare "$URL" $DOTDIR
   $DOTGIT config --local status.showUntrackedFiles no
 fi
 echo "===> dotfiles status..."
 $DOTGIT status
-echo "===> dotfiles auto upstream"
-$DOTGIT config push.autoSetupRemote true
 echo "===> dotfiles checkout..."
-$DOTGIT checkout main || fail "failed to checkout dotfiles, append .tmp to the files listed and rerun"
+$DOTGIT checkout main || echo "failed to checkout dotfiles, append .tmp to the files listed and rerun"
 # TODO, if fail, auto append .tmp to clash files
 echo '===> restoring keys...'
 mkdir -p ~/.ssh
@@ -56,12 +54,10 @@ curl -s https://github.com/jpillora.keys | tee ~/.ssh/authorized_keys
 echo '===> restoring git config...'
 git config --global user.name "Jaime Pillora"
 git config --global user.email "dev@jpillora.com"
+git config --global url."git@github.com:".insteadOf "https://github.com/"
 if [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
-  # always use ssh
-  git config --global url."git@github.com:".insteadOf "https://github.com/"
-  # sign commits with ssh
-  git config --global gpg.format ssh
-  git config --global user.signingkey "$(cat ~/.ssh/id_ed25519.pub)"
+	git config --global gpg.format ssh
+	git config --global user.signingkey "$(cat ~/.ssh/id_ed25519.pub)"
 fi
 # TODO, chsh and fish setup
 echo '===> restored dotfiles'
