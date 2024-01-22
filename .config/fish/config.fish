@@ -20,8 +20,8 @@ if status is-interactive
     end
     # lazy load bun
     if test -d $HOME/.bun
-        set -Ux BUN_INSTALL "/Users/jpx15/.bun"
-        set -px --path PATH "/Users/jpx15/.bun/bin"
+        set -Ux BUN_INSTALL "$HOME/.bun"
+        set -px --path PATH "$HOME/.bun/bin"
     end
     # lazy fishenv
     if test -f $HOME/.config/fishenv/env.fish
@@ -129,7 +129,3 @@ function gitaddpush
     end
     git add -A; and git commit -m "$msg"; and git push
 end
-
-# bun
-set --export BUN_INSTALL "$HOME/.bun"
-set --export PATH $BUN_INSTALL/bin $PATH

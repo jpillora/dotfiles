@@ -13,8 +13,8 @@ fail() {
 mgrinstall=""
 if installed brew; then
   mgrinstall="brew -vd install"
-elif installed apt; then
-  mgrinstall="apt -y install"
+elif installed apt-get; then
+  mgrinstall="DEBIAN_FRONTEND=noninteractive apt-get -y install"
 elif installed yum; then
   mgrinstall="yum -y install"
 else
@@ -24,6 +24,7 @@ fi
 # install dependencies
 $mgrinstall git fish jq
 # securely fetch the keys from GitHub
+mkdir -p ~/.ssh/
 KEYS=$(curl -s https://api.github.com/meta | jq -r '.ssh_keys[]')
 IFS=$'\n'
 for K in $KEYS; do
@@ -41,8 +42,8 @@ if [ -d "$DOTDIR" ]; then
 else
   echo "===> cloning dotfiles..."
   URL="git@github.com:jpillora/dotfiles.git"
-  if ! git ls-remote "$URL" 2> /dev/null; then
-  	URL="https://github.com/jpillora/dotfiles.git"
+  if ! git ls-remote "$URL" 2>/dev/null; then
+    URL="https://github.com/jpillora/dotfiles.git"
   fi
   git clone --bare "$URL" $DOTDIR
   $DOTGIT config --local status.showUntrackedFiles no
@@ -60,8 +61,8 @@ git config --global user.name "Jaime Pillora"
 git config --global user.email "dev@jpillora.com"
 git config --global url."git@github.com:".insteadOf "https://github.com/"
 if [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
-	git config --global gpg.format ssh
-	git config --global user.signingkey "$(cat ~/.ssh/id_ed25519.pub)"
+  git config --global gpg.format ssh
+  git config --global user.signingkey "$(cat ~/.ssh/id_ed25519.pub)"
 fi
 # TODO, chsh and fish setup
 echo '===> restored dotfiles'
