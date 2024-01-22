@@ -14,7 +14,8 @@ mgrinstall=""
 if installed brew; then
   mgrinstall="brew -vd install"
 elif installed apt-get; then
-  mgrinstall="DEBIAN_FRONTEND=noninteractive apt-get -y install"
+  export DEBIAN_FRONTEND=noninteractive
+  mgrinstall="apt-get -y install"
 elif installed yum; then
   mgrinstall="yum -y install"
 else
