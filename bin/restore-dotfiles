@@ -6,7 +6,7 @@ installed() {
   command -v "$1" >/dev/null 2>&1
 }
 fail() {
-  echo "$@"
+  echo "🔴 $@"
   exit 1
 }
 # which package manager
@@ -14,6 +14,14 @@ mgrinstall=""
 if installed brew; then
   mgrinstall="brew -vd install"
 elif installed apt-get; then
+  # determine if we need to apt update
+  curr=$(date +%s)
+  last=$(stat -c %Y /var/lib/apt/lists/)
+  diff=$(((curr - last) / 3600))
+  if [ $diff -gt 24 ]; then
+    echo "===> apt update..."
+    apt-get update
+  fi
   export DEBIAN_FRONTEND=noninteractive
   mgrinstall="apt-get -y install"
 elif installed yum; then
@@ -23,7 +31,7 @@ else
   fail "no package manager (brew/apt) found"
 fi
 # install dependencies
-$mgrinstall git fish jq
+$mgrinstall curl git fish jq
 # securely fetch the keys from GitHub
 mkdir -p ~/.ssh/
 KEYS=$(curl -s https://api.github.com/meta | jq -r '.ssh_keys[]')
@@ -37,9 +45,9 @@ done
 # https://www.atlassian.com/git/tutorials/dotfiles
 mkdir -p "$HOME/.config/"
 DOTDIR="$HOME/.config/jpillora-dotfiles/"
-DOTGIT="git --git-dir=$DOTDIR --work-tree=$HOME"
+function xgit() { git --git-dir="$DOTDIR" --work-tree="$HOME" "$@"; }
 if [ -d "$DOTDIR" ]; then
-  echo "===> dotfiles repo already exists"
+  echo "===> 🟢 dotfiles repo already exists"
 else
   echo "===> cloning dotfiles..."
   URL="git@github.com:jpillora/dotfiles.git"
@@ -47,12 +55,14 @@ else
     URL="https://github.com/jpillora/dotfiles.git"
   fi
   git clone --bare "$URL" $DOTDIR
-  $DOTGIT config --local status.showUntrackedFiles no
+  echo "===> 🟢 cloned into $DOTDIR"
+  xgit config --local status.showUntrackedFiles no
 fi
 echo "===> dotfiles status..."
-$DOTGIT status
+xgit status
 echo "===> dotfiles checkout..."
-$DOTGIT checkout main || echo "failed to checkout dotfiles, append .tmp to the files listed and rerun"
+xgit checkout main || echo "failed to checkout dotfiles, append .tmp to the files listed and rerun"
+echo "===> 🟢 checkout dotfiles success"
 # TODO, if fail, auto append .tmp to clash files
 echo '===> restoring keys...'
 mkdir -p ~/.ssh
@@ -66,4 +76,4 @@ if [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
   git config --global user.signingkey "$(cat ~/.ssh/id_ed25519.pub)"
 fi
 # TODO, chsh and fish setup
-echo '===> restored dotfiles'
+echo '===> 🟢 restored dotfiles'
