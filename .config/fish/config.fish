@@ -7,6 +7,7 @@ set PATH $HOME/bin /usr/local/bin /usr/local/go/bin $GOPATH/bin $PATH
 #AWS
 set -x AWS_REGION ap-southeast-2
 set -x AWS_DEFAULT_REGION ap-southeast-2
+set -x AWS_SHARED_CREDENTIALS_FILE $HOME/.aws/credentials
 #FISH
 bind \cH backward-kill-word
 set __fish_git_prompt_color_branch yellow
@@ -128,3 +129,7 @@ function gitaddpush
     end
     git add -A; and git commit -m "$msg"; and git push
 end
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
